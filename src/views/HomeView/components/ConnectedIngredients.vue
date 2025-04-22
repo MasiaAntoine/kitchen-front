@@ -11,10 +11,10 @@ import {
 } from '@/components/ui/card'
 
 const gaugeData = [
-  { percentage: 75, mesure: 'grammes', quantity: 1000, label: 'Pâtes', color: '#41B883' },
-  { percentage: 45, mesure: 'grammes', quantity: 765, label: 'Sucre', color: '#E46651' },
-  { percentage: 30, mesure: 'millilitres', quantity: 340, label: 'Lait', color: '#00D8FF' },
-  { percentage: 60, mesure: 'grammes', quantity: 356, label: 'Beurre', color: '#DD1B16' },
+  { percentage: 75, mesure: 'grammes', quantity: 1000, label: 'Pâtes' },
+  { percentage: 45, mesure: 'grammes', quantity: 765, label: 'Sucre' },
+  { percentage: 30, mesure: 'millilitres', quantity: 340, label: 'Lait' },
+  { percentage: 60, mesure: 'grammes', quantity: 356, label: 'Beurre' },
 ]
 </script>
 

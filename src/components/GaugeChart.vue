@@ -32,10 +32,19 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  color: {
-    type: String,
-    default: '#41B883',
-  },
+})
+
+// Fonction pour déterminer la couleur en fonction du pourcentage
+const getColorByPercentage = computed(() => {
+  const normalizedPercentage = ((props.percentage - props.min) / (props.max - props.min)) * 100
+
+  if (normalizedPercentage < 33) {
+    return '#FF4D4D'
+  } else if (normalizedPercentage < 66) {
+    return '#FFA500'
+  } else {
+    return '#41B883'
+  }
 })
 
 const gaugeData = computed(() => {
@@ -46,7 +55,7 @@ const gaugeData = computed(() => {
     labels: [props.label, ''],
     datasets: [
       {
-        backgroundColor: [props.color, '#dfdfe8'],
+        backgroundColor: [getColorByPercentage.value, '#dfdfe8'],
         data: [percentage, remaining],
         borderWidth: 0,
         cutout: '85%',
