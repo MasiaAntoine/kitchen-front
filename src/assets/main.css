@@ -6,7 +6,7 @@
     --black: rgb(46, 46, 49);
     --error: rgba(255, 83, 83, 1);
     --grey: rgba(152, 152, 177, 1);
-    --light-grey: rgba(223, 223, 232, 1);
+    --light-grey: rgb(223, 223, 232);
     --near-white: rgba(246, 245, 255, 1);
     --white: rgba(255, 255, 255, 1);
 

@@ -102,7 +102,7 @@ const toggleMenu = (title: string) => {
     </Sidebar>
 
     <div class="w-full">
-      <div class="px-1">
+      <div class="px-1 pb-3">
         <SidebarTrigger />
       </div>
 
