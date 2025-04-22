@@ -23,7 +23,7 @@ const gaugeData = [
     <CardHeader>
       <CardTitle>Ingrédients Connectées</CardTitle>
       <CardDescription>
-        Voici un aperçu des ingrédients connectés et de leurs valeurs nutritionnelles.
+        Voici un aperçu des ingrédients connectés et de leur stockage.
       </CardDescription>
     </CardHeader>
 
