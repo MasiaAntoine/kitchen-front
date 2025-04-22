@@ -22,39 +22,24 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 
 const items = [
   {
-    title: 'Home',
+    title: 'Accueil',
     url: '',
     icon: Home,
   },
-  {
-    title: 'Inbox',
-    icon: Inbox,
-    submenu: [
-      {
-        title: 'Messages',
-        url: '#messages',
-      },
-      {
-        title: 'Notifications',
-        url: '#notifications',
-      },
-    ],
-  },
-  {
-    title: 'Calendar',
-    url: '#',
-    icon: Calendar,
-  },
-  {
-    title: 'Search',
-    url: '#',
-    icon: Search,
-  },
-  {
-    title: 'Settings',
-    url: '#',
-    icon: Settings,
-  },
+  // {
+  //   title: 'Inbox',
+  //   icon: Inbox,
+  //   submenu: [
+  //     {
+  //       title: 'Messages',
+  //       url: '#messages',
+  //     },
+  //     {
+  //       title: 'Notifications',
+  //       url: '#notifications',
+  //     },
+  //   ],
+  // },
 ]
 
 const open = ref(false)
@@ -117,7 +102,10 @@ const toggleMenu = (title: string) => {
     </Sidebar>
 
     <div class="w-full">
-      <SidebarTrigger />
+      <div class="px-1">
+        <SidebarTrigger />
+      </div>
+
       <div class="w-full px-2">
         <slot />
       </div>
