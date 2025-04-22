@@ -66,6 +66,7 @@ module.exports = {
         'grey-light': 'var(--grey-light)',
         'near-white': 'var(--near-white)',
         white: 'var(--white)',
+        dark: 'var(--dark)',
       },
     },
   },
