@@ -116,9 +116,11 @@ const toggleMenu = (title: string) => {
       </SidebarContent>
     </Sidebar>
 
-    <main>
+    <div class="w-full">
       <SidebarTrigger />
-      <slot />
-    </main>
+      <div class="w-full px-2">
+        <slot />
+      </div>
+    </div>
   </SidebarProvider>
 </template>
