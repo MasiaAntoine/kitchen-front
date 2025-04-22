@@ -10,12 +10,33 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel'
+
 const gaugeData = [
   { percentage: 75, mesure: 'grammes', quantity: 1000, label: 'Pâtes' },
   { percentage: 45, mesure: 'grammes', quantity: 765, label: 'Sucre' },
   { percentage: 30, mesure: 'millilitres', quantity: 340, label: 'Lait' },
   { percentage: 60, mesure: 'grammes', quantity: 356, label: 'Beurre' },
+
+  { percentage: 20, mesure: 'grammes', quantity: 200, label: 'Farine' },
+  { percentage: 90, mesure: 'grammes', quantity: 500, label: 'Sel' },
+  { percentage: 10, mesure: 'millilitres', quantity: 100, label: 'Huile' },
 ]
+
+const itemsPerSlide = 4
+const slidesData = []
+
+for (let i = 0; i < Math.ceil(gaugeData.length / itemsPerSlide); i++) {
+  const start = i * itemsPerSlide
+  const end = start + itemsPerSlide
+  slidesData.push(gaugeData.slice(start, end))
+}
 </script>
 
 <template>
@@ -27,17 +48,30 @@ const gaugeData = [
       </CardDescription>
     </CardHeader>
 
-    <CardContent class="grid grid-cols-2 gap-y-6">
-      <div class="w-full" v-for="(item, index) in gaugeData" :key="index">
-        <GaugeChart
-          class="h-[13dvh]"
-          :percentage="item.percentage"
-          :mesure="item.mesure"
-          :label="item.label"
-          :color="item.color"
-          :quantity="item.quantity"
-        />
-      </div>
+    <CardContent>
+      <Carousel class="relative w-full">
+        <CarouselContent>
+          <CarouselItem
+            class="grid grid-cols-2 gap-y-6"
+            v-for="(slideItems, slideIndex) in slidesData"
+            :key="slideIndex"
+          >
+            <div class="w-full" v-for="(item, index) in slideItems" :key="index">
+              <GaugeChart
+                class="h-[13dvh]"
+                :percentage="item.percentage"
+                :mesure="item.mesure"
+                :label="item.label"
+                :color="item.color"
+                :quantity="item.quantity"
+              />
+            </div>
+          </CarouselItem>
+        </CarouselContent>
+
+        <CarouselPrevious v-if="gaugeData.length > 4" class="absolute -left-3" />
+        <CarouselNext v-if="gaugeData.length > 4" class="absolute -right-3" />
+      </Carousel>
     </CardContent>
   </Card>
 </template>
