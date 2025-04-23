@@ -40,7 +40,7 @@ for (let i = 0; i < Math.ceil(gaugeData.length / itemsPerSlide); i++) {
 </script>
 
 <template>
-  <Card class="w-full">
+  <Card class="w-full h-[45.7dvh]">
     <CardHeader>
       <CardTitle>Ingrédients Connectées</CardTitle>
       <CardDescription>
@@ -58,7 +58,7 @@ for (let i = 0; i < Math.ceil(gaugeData.length / itemsPerSlide); i++) {
           >
             <div class="w-full" v-for="(item, index) in slideItems" :key="index">
               <GaugeChart
-                class="h-[13dvh]"
+                class="h-[10dvh]"
                 :percentage="item.percentage"
                 :mesure="item.mesure"
                 :label="item.label"

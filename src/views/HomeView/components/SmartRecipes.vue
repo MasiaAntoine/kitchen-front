@@ -117,7 +117,7 @@ const recipes = [
 </script>
 
 <template>
-  <Card class="w-full">
+  <Card class="w-full h-[45.7dvh]">
     <CardHeader>
       <CardTitle>Recettes Intelligentes</CardTitle>
       <CardDescription>
@@ -126,7 +126,7 @@ const recipes = [
       </CardDescription>
     </CardHeader>
     <CardContent>
-      <div class="overflow-y-auto max-h-[30dvh] px-4">
+      <div class="overflow-y-auto max-h-[25dvh] px-4">
         <template v-for="(recipe, index) in recipes" :key="recipe.id">
           <div class="flex justify-between items-center">
             <div>{{ recipe.name }}</div>

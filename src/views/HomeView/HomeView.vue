@@ -6,9 +6,16 @@ import SmartRecipes from './components/SmartRecipes.vue'
 
 <template>
   <AppSidebar>
-    <div class="flex gap-3">
-      <ConnectedIngredients />
-      <SmartRecipes />
+    <div class="flex gap-3 flex-col">
+      <div class="flex gap-3">
+        <ConnectedIngredients />
+        <SmartRecipes />
+      </div>
+
+      <div class="flex gap-3">
+        <!-- <ConnectedIngredients />
+        <SmartRecipes /> -->
+      </div>
     </div>
   </AppSidebar>
 </template>
