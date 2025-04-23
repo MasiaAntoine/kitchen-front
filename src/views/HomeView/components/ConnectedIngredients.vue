@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { IngredientDto } from '@/types/dto/ingredient.dto'
+
+import { ref } from 'vue'
+
 import GaugeChart from '@/components/GaugeChart.vue'
 
 import {
@@ -18,24 +22,23 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 
-const gaugeData = [
+const gaugeData = ref<IngredientDto[]>([
   { percentage: 75, mesure: 'grammes', quantity: 1000, label: 'Pâtes' },
   { percentage: 45, mesure: 'grammes', quantity: 765, label: 'Sucre' },
   { percentage: 30, mesure: 'millilitres', quantity: 340, label: 'Lait' },
   { percentage: 60, mesure: 'grammes', quantity: 356, label: 'Beurre' },
-
   { percentage: 20, mesure: 'grammes', quantity: 200, label: 'Farine' },
   { percentage: 90, mesure: 'grammes', quantity: 500, label: 'Sel' },
   { percentage: 10, mesure: 'millilitres', quantity: 100, label: 'Huile' },
-]
+])
 
 const itemsPerSlide = 4
-const slidesData = []
+const slidesData: any[] = []
 
-for (let i = 0; i < Math.ceil(gaugeData.length / itemsPerSlide); i++) {
+for (let i = 0; i < Math.ceil(gaugeData.value.length / itemsPerSlide); i++) {
   const start = i * itemsPerSlide
   const end = start + itemsPerSlide
-  slidesData.push(gaugeData.slice(start, end))
+  slidesData.push(gaugeData.value.slice(start, end))
 }
 </script>
 

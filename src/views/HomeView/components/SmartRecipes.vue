@@ -131,7 +131,7 @@ const recipes = [
           <div class="flex justify-between items-center">
             <div>{{ recipe.name }}</div>
             <div class="flex gap-1 text-xs items-center text-orange-500">
-              {{ recipe.time }} min <Timer size="18" />
+              {{ recipe.time }} min <Timer :size="18" />
             </div>
           </div>
           <Separator v-if="index < recipes.length - 1" class="my-2" />

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { MenuItemDto } from '@/types/dto'
+
 import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 
@@ -20,7 +22,7 @@ import {
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 
-const items = [
+const menuItem = ref<MenuItemDto[]>([
   {
     title: 'Accueil',
     url: '',
@@ -40,7 +42,7 @@ const items = [
   //     },
   //   ],
   // },
-]
+])
 
 const open = ref(false)
 const openMenus = ref<Record<string, boolean>>({})
@@ -57,7 +59,7 @@ const toggleMenu = (title: string) => {
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem v-for="item in items" :key="item.title">
+              <SidebarMenuItem v-for="item in menuItem" :key="item.title">
                 <template v-if="item.submenu">
                   <Collapsible v-model:open="openMenus[item.title]">
                     <CollapsibleTrigger asChild>
