@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host --port 8080",
+    "deploy-app": "node deploy.js",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
@@ -16,6 +17,7 @@
     "@tanstack/vue-table": "^8.21.3",
     "@vueuse/core": "^13.0.0",
     "chart.js": "^4.4.9",
+    "dotenv": "^16.5.0",
     "embla-carousel-vue": "^8.6.0",
     "lucide-vue-next": "^0.484.0",
     "reka-ui": "^2.1.1",
