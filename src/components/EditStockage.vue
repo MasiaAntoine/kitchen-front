@@ -110,6 +110,8 @@ const submit = () => {
         <DrawerFooter>
           <DrawerClose as-child>
             <Button @click="submit()">Submit</Button>
+          </DrawerClose>
+          <DrawerClose as-child>
             <Button variant="outline"> Cancel </Button>
           </DrawerClose>
         </DrawerFooter>
