@@ -24,6 +24,29 @@ const props = defineProps<{
   icon: Component
   ingredients: IngredientDto[]
 }>()
+
+const emit = defineEmits<{
+  (e: 'update:ingredients', ingredients: IngredientDto[]): void
+}>()
+
+const updateIngredient = (updatedIngredient: {
+  id: string
+  quantity: number
+  percentage: number
+}) => {
+  const updatedIngredients = props.ingredients.map((ingredient) => {
+    if (ingredient.id === updatedIngredient.id) {
+      return {
+        ...ingredient,
+        quantity: updatedIngredient.quantity,
+        percentage: updatedIngredient.percentage,
+      }
+    }
+    return ingredient
+  })
+
+  emit('update:ingredients', updatedIngredients)
+}
 </script>
 
 <template>
@@ -37,7 +60,7 @@ const props = defineProps<{
     <CardContent>
       <div class="overflow-y-auto max-h-[33dvh] px-4 flex flex-col gap-4">
         <template v-for="(ingredient, index) in props.ingredients">
-          <EditStockage :ingredient="ingredient">
+          <EditStockage :ingredient="ingredient" @update:ingredient="updateIngredient">
             <div class="hover:bg-gray-200 cursor-pointer py-1 px-2 rounded-md">
               <div class="flex justify-between items-center">
                 <div>{{ ingredient.label }}</div>

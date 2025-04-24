@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { IngredientDto } from '@/types/dto/ingredient.dto'
 
-import { ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 import GaugeChart from '@/components/GaugeChart.vue'
 
@@ -22,24 +22,52 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 
-const gaugeData = ref<IngredientDto[]>([
-  { percentage: 75, mesure: 'grammes', quantity: 1000, label: 'Pâtes' },
-  { percentage: 45, mesure: 'grammes', quantity: 765, label: 'Sucre' },
-  { percentage: 30, mesure: 'millilitres', quantity: 340, label: 'Lait' },
-  { percentage: 60, mesure: 'grammes', quantity: 356, label: 'Beurre' },
-  { percentage: 20, mesure: 'grammes', quantity: 200, label: 'Farine' },
-  { percentage: 90, mesure: 'grammes', quantity: 500, label: 'Sel' },
-  { percentage: 10, mesure: 'millilitres', quantity: 100, label: 'Huile' },
-])
+// Fonction pour calculer le pourcentage automatiquement
+const calculatePercentage = (quantity: number, maxQuantity: number): number => {
+  if (!maxQuantity || maxQuantity <= 0) return 0
+  return Math.min(Math.round((quantity / maxQuantity) * 100), 100)
+}
+
+// Données brutes des ingrédients
+const ingredientsRaw = [
+  { id: '1', mesure: 'grammes', quantity: 1500, 'max-quantity': 2000, label: 'Pâtes' },
+  { id: '2', mesure: 'grammes', quantity: 765, 'max-quantity': 2000, label: 'Sucre' },
+  { id: '3', mesure: 'millilitres', quantity: 340, 'max-quantity': 1000, label: 'Lait' },
+  { id: '4', mesure: 'grammes', quantity: 356, 'max-quantity': 500, label: 'Beurre' },
+  { id: '5', mesure: 'grammes', quantity: 200, 'max-quantity': 1000, label: 'Farine' },
+  { id: '6', mesure: 'grammes', quantity: 500, 'max-quantity': 1000, label: 'Sel' },
+  { id: '7', mesure: 'millilitres', quantity: 100, 'max-quantity': 1000, label: 'Huile' },
+]
+
+// Fonction pour initialiser les ingrédients avec le calcul du pourcentage
+const initIngredientsWithPercentage = (ingredients: any[]): IngredientDto[] => {
+  return ingredients.map((ingredient) => ({
+    ...ingredient,
+    percentage: calculatePercentage(ingredient.quantity, ingredient['max-quantity'] || 1000),
+  }))
+}
+
+// Initialiser les données avec les pourcentages calculés
+const gaugeData = ref<IngredientDto[]>(initIngredientsWithPercentage(ingredientsRaw))
+
+// Mettre à jour les pourcentages au montage du composant
+onMounted(() => {
+  gaugeData.value = gaugeData.value.map((ingredient) => ({
+    ...ingredient,
+    percentage: calculatePercentage(ingredient.quantity, ingredient['max-quantity'] || 1000),
+  }))
+})
 
 const itemsPerSlide = 4
-const slidesData: any[] = []
-
-for (let i = 0; i < Math.ceil(gaugeData.value.length / itemsPerSlide); i++) {
-  const start = i * itemsPerSlide
-  const end = start + itemsPerSlide
-  slidesData.push(gaugeData.value.slice(start, end))
-}
+const slidesData = computed(() => {
+  const result = []
+  for (let i = 0; i < Math.ceil(gaugeData.value.length / itemsPerSlide); i++) {
+    const start = i * itemsPerSlide
+    const end = start + itemsPerSlide
+    result.push(gaugeData.value.slice(start, end))
+  }
+  return result
+})
 </script>
 
 <template>
@@ -59,7 +87,7 @@ for (let i = 0; i < Math.ceil(gaugeData.value.length / itemsPerSlide); i++) {
             v-for="(slideItems, slideIndex) in slidesData"
             :key="slideIndex"
           >
-            <div class="w-full" v-for="(item, index) in slideItems" :key="index">
+            <div class="w-full" v-for="(item, index) in slideItems" :key="item.id">
               <GaugeChart
                 class="h-[10dvh]"
                 :percentage="item.percentage"

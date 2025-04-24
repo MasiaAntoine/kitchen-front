@@ -22,6 +22,13 @@ const props = defineProps<{
   ingredient: IngredientDto[]
 }>()
 
+const emit = defineEmits<{
+  (
+    e: 'update:ingredient',
+    updatedIngredient: { id: string; quantity: number; percentage: number },
+  ): void
+}>()
+
 const { toast } = useToast()
 const quantity = ref(props.ingredient.quantity)
 const counter = ref(null)
@@ -40,11 +47,26 @@ onMounted(() => {
 const getButtonVariant = (value: number) => {
   return counter.value === value ? 'default' : 'outline'
 }
+
+// Fonction pour calculer le pourcentage en fonction de la quantité
+const calculatePercentage = (quantity: number) => {
+  // Vous pouvez ajuster cette logique selon votre cas d'utilisation
+  // Par exemple, si vous avez une quantité maximale dans votre DTO
+  const maxQuantity = props.ingredient.maxQuantity || 1000 // Valeur par défaut
+  return Math.min(Math.round((quantity / maxQuantity) * 100), 100)
+}
+
 const submit = () => {
+  const percentage = calculatePercentage(quantity.value)
   const updatedIngredient = {
     id: props.ingredient.id,
     quantity: quantity.value,
+    percentage: percentage,
   }
+
+  // Émission de l'événement pour mettre à jour l'ingrédient
+  emit('update:ingredient', updatedIngredient)
+
   console.log('Updated ingredient:', updatedIngredient)
 
   toast({
