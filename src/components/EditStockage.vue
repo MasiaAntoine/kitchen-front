@@ -19,7 +19,7 @@ import { Minus, Plus } from 'lucide-vue-next'
 import { onMounted, ref } from 'vue'
 
 const props = defineProps<{
-  ingredient: IngredientDto[]
+  ingredient: IngredientDto
 }>()
 
 const emit = defineEmits<{
@@ -31,7 +31,7 @@ const emit = defineEmits<{
 
 const { toast } = useToast()
 const quantity = ref(props.ingredient.quantity)
-const counter = ref(null)
+const counter = ref<number>(1)
 const counterValues = [1, 10, 20, 30, 50, 100, 200, 500, 1000]
 
 onMounted(() => {
@@ -52,14 +52,14 @@ const getButtonVariant = (value: number) => {
 const calculatePercentage = (quantity: number) => {
   // Vous pouvez ajuster cette logique selon votre cas d'utilisation
   // Par exemple, si vous avez une quantité maximale dans votre DTO
-  const maxQuantity = props.ingredient.maxQuantity || 1000 // Valeur par défaut
+  const maxQuantity = props.ingredient['max-quantity'] || 1000 // Valeur par défaut
   return Math.min(Math.round((quantity / maxQuantity) * 100), 100)
 }
 
 const submit = () => {
   const percentage = calculatePercentage(quantity.value)
   const updatedIngredient = {
-    id: props.ingredient.id,
+    id: String(props.ingredient.id), // Conversion en string
     quantity: quantity.value,
     percentage: percentage,
   }

@@ -4,5 +4,5 @@ export interface IngredientDto {
   quantity: number
   'max-quantity': number
   mesure: string
-  percentage: number
+  percentage?: number
 }

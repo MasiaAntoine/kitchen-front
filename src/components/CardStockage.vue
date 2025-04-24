@@ -35,7 +35,7 @@ const updateIngredient = (updatedIngredient: {
   percentage: number
 }) => {
   const updatedIngredients = props.ingredients.map((ingredient) => {
-    if (ingredient.id === updatedIngredient.id) {
+    if (String(ingredient.id) === updatedIngredient.id) {
       return {
         ...ingredient,
         quantity: updatedIngredient.quantity,

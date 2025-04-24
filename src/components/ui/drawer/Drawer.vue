@@ -13,7 +13,7 @@ const forwarded = useForwardPropsEmits(props, emits)
 </script>
 
 <template>
-  <DrawerRoot v-bind="forwarded">
+  <DrawerRoot v-bind="typeof forwarded === 'object' ? forwarded : {}">
     <slot />
   </DrawerRoot>
 </template>

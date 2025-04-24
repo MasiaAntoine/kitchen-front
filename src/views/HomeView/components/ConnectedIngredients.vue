@@ -93,7 +93,6 @@ const slidesData = computed(() => {
                 :percentage="item.percentage"
                 :mesure="item.mesure"
                 :label="item.label"
-                :color="item.color"
                 :quantity="item.quantity"
               />
             </div>
