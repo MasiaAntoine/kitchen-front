@@ -3,8 +3,8 @@ import router from '@/router'
 
 axios.interceptors.request.use(
   (config) => {
-    const username = sessionStorage.getItem('username')
-    const password = sessionStorage.getItem('password')
+    const username = localStorage.getItem('username')
+    const password = localStorage.getItem('password')
 
     if (username && password) {
       const credentials = btoa(`${username}:${password}`)
@@ -20,8 +20,8 @@ axios.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       router.push({ name: 'Login' })
-      sessionStorage.removeItem('username')
-      sessionStorage.removeItem('password')
+      localStorage.removeItem('username')
+      localStorage.removeItem('password')
     }
     return Promise.reject(error)
   },

@@ -46,8 +46,8 @@ const onSubmit = handleSubmit(async (values) => {
       toast({
         title: 'Connexion réussie !',
       })
-      sessionStorage.setItem('username', values.username)
-      sessionStorage.setItem('password', values.password)
+      localStorage.setItem('username', values.username)
+      localStorage.setItem('password', values.password)
       router.push({ name: 'Home' })
     },
     onError: () => {

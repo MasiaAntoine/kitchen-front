@@ -19,8 +19,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const username = sessionStorage.getItem('username')
-  const password = sessionStorage.getItem('password')
+  const username = localStorage.getItem('username')
+  const password = localStorage.getItem('password')
 
   if (!username || !password) {
     if (to.name !== 'Login') {
