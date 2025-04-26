@@ -1,11 +1,16 @@
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/vue-query'
-import { toast } from 'vue-sonner'
+import { useToast } from '@/components/ui/toast/use-toast'
 import { AxiosError } from 'axios'
+
+const { toast } = useToast()
 
 const errorHandler = (thrownError: Error) => {
   if (thrownError instanceof AxiosError && thrownError.response) {
     const error = thrownError.response
-    toast.error(error.data.message ?? 'An error occurred !')
+    toast({
+      title: 'An error occurred !',
+      description: `${error.status} ${error.statusText}`,
+    })
   }
 }
 

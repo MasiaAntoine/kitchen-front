@@ -50,10 +50,9 @@ const onSubmit = handleSubmit(async (values) => {
       sessionStorage.setItem('password', values.password)
       router.push({ name: 'Home' })
     },
-    onError: (error) => {
+    onError: () => {
       toast({
         title: 'Connexion échoué !',
-        description: error.response.data.message,
       })
     },
   })
@@ -98,9 +97,7 @@ const onSubmit = handleSubmit(async (values) => {
           </FormItem>
         </FormField>
 
-        <Button type="submit" class="w-full">
-          {{ isLoading ? 'Connexion en cours...' : 'Se connecter' }}
-        </Button>
+        <Button type="submit" class="w-full"> Se connecter </Button>
       </form>
     </div>
   </div>
