@@ -5,6 +5,7 @@ export function useFetchIngredientsConnected() {
   const { data, isError, error, isPending } = useQuery({
     queryKey: ['ingredientsConnected'],
     queryFn: fetchIngredientsConnected,
+    refetchInterval: 2000,
   })
 
   return {
