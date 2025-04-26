@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { IngredientDto } from '@/types/dto/ingredient.dto'
 
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
+import { useFetchIngredientsConnected } from '@/hooks'
 
 import GaugeChart from '@/components/GaugeChart.vue'
 
@@ -22,41 +23,41 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 
+const { data, isError, error, isPending } = useFetchIngredientsConnected()
+
 // Fonction pour calculer le pourcentage automatiquement
 const calculatePercentage = (quantity: number, maxQuantity: number): number => {
   if (!maxQuantity || maxQuantity <= 0) return 0
   return Math.min(Math.round((quantity / maxQuantity) * 100), 100)
 }
 
-// Données brutes des ingrédients
-const ingredientsRaw = [
-  { id: '1', mesure: 'grammes', quantity: 1500, 'max-quantity': 2000, label: 'Pâtes' },
-  { id: '2', mesure: 'grammes', quantity: 765, 'max-quantity': 2000, label: 'Sucre' },
-  { id: '3', mesure: 'millilitres', quantity: 340, 'max-quantity': 1000, label: 'Lait' },
-  { id: '4', mesure: 'grammes', quantity: 356, 'max-quantity': 500, label: 'Beurre' },
-  { id: '5', mesure: 'grammes', quantity: 200, 'max-quantity': 1000, label: 'Farine' },
-  { id: '6', mesure: 'grammes', quantity: 500, 'max-quantity': 1000, label: 'Sel' },
-  { id: '7', mesure: 'millilitres', quantity: 100, 'max-quantity': 1000, label: 'Huile' },
-]
+// Initialiser avec un tableau vide en attendant les données de l'API
+const gaugeData = ref<IngredientDto[]>([])
 
-// Fonction pour initialiser les ingrédients avec le calcul du pourcentage
-const initIngredientsWithPercentage = (ingredients: any[]): IngredientDto[] => {
-  return ingredients.map((ingredient) => ({
-    ...ingredient,
-    percentage: calculatePercentage(ingredient.quantity, ingredient['max-quantity'] || 1000),
+// Fonction pour transformer les données de l'API
+const formatApiData = (apiData: any[]): IngredientDto[] => {
+  if (!apiData || !Array.isArray(apiData)) return []
+
+  return apiData.map((ingredient) => ({
+    id: ingredient.id.toString(),
+    label: ingredient.label,
+    quantity: ingredient.quantity,
+    'max-quantity': ingredient.max_quantity,
+    mesure: ingredient.mesure,
+    percentage: calculatePercentage(ingredient.quantity, ingredient.max_quantity || 1000),
   }))
 }
 
-// Initialiser les données avec les pourcentages calculés
-const gaugeData = ref<IngredientDto[]>(initIngredientsWithPercentage(ingredientsRaw))
-
-// Mettre à jour les pourcentages au montage du composant
-onMounted(() => {
-  gaugeData.value = gaugeData.value.map((ingredient) => ({
-    ...ingredient,
-    percentage: calculatePercentage(ingredient.quantity, ingredient['max-quantity'] || 1000),
-  }))
-})
+// Observer les changements de données de l'API
+watch(
+  () => data.value,
+  (newData) => {
+    if (newData && !isPending.value) {
+      gaugeData.value = formatApiData(newData.data.data)
+    }
+  },
+  { immediate: true },
+)
 
 const itemsPerSlide = 4
 const slidesData = computed(() => {
@@ -80,7 +81,13 @@ const slidesData = computed(() => {
     </CardHeader>
 
     <CardContent>
-      <Carousel class="relative w-full">
+      <div v-if="isPending" class="flex justify-center items-center h-[20dvh]">
+        Chargement des ingrédients...
+      </div>
+      <div v-else-if="isError" class="flex justify-center items-center h-[20dvh]">
+        Erreur lors du chargement des ingrédients
+      </div>
+      <Carousel v-else class="relative w-full">
         <CarouselContent>
           <CarouselItem
             class="grid grid-cols-2 gap-y-6"
