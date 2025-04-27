@@ -57,6 +57,8 @@ const calculatePercentage = (quantity: number) => {
 }
 
 const submit = () => {
+  if (quantity.value === props.ingredient.quantity) return
+
   const percentage = calculatePercentage(quantity.value)
   const updatedIngredient = {
     id: String(props.ingredient.id), // Conversion en string
@@ -131,7 +133,9 @@ const submit = () => {
         </div>
         <DrawerFooter>
           <DrawerClose as-child>
-            <Button @click="submit()">Mettre à jour</Button>
+            <Button @click="submit()" :disabled="quantity === props.ingredient.quantity"
+              >Mettre à jour</Button
+            >
           </DrawerClose>
           <DrawerClose as-child>
             <Button variant="outline"> Annuler </Button>
