@@ -32,7 +32,8 @@ export function useFetchIngredientsByType() {
 
 export function useUpdateIngredientQuantity() {
   const { mutate, isPending, isError, error, isSuccess } = useMutation({
-    mutationFn: ({ id, data }) => updateIngredientQuantity(id, data),
+    mutationFn: (params: { id: number; data: object }) =>
+      updateIngredientQuantity(params.id, params.data),
   })
 
   return {
