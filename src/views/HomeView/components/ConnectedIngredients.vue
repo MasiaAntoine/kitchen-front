@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { IngredientDto } from '@/types/dto/ingredient.dto'
+import { Info } from 'lucide-vue-next'
 
 import { ref, onMounted, computed, watch } from 'vue'
 import { useFetchIngredientsConnected } from '@/hooks'
@@ -22,6 +23,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
+
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -129,7 +132,7 @@ const slidesData = computed(() => {
             v-for="(slideItems, slideIndex) in slidesData"
             :key="slideIndex"
           >
-            <div class="w-full" v-for="(item, index) in slideItems" :key="item.id">
+            <div class="w-full relative" v-for="(item, index) in slideItems" :key="item.id">
               <GaugeChart
                 class="h-[10dvh]"
                 :percentage="item.percentage"
@@ -137,6 +140,18 @@ const slidesData = computed(() => {
                 :label="item.label"
                 :quantity="item.quantity"
               />
+
+              <div class="absolute -top-4 right-6 p-4 cursor-pointer">
+                <Popover>
+                  <PopoverTrigger>
+                    <Info class="size-[20px] text-gray-500" />
+                  </PopoverTrigger>
+                  <PopoverContent class="w-[160px] text-sm">
+                    <div>Identifiant {{ item.id }}</div>
+                    <div>{{ item.quantity }} / {{ item.max_quantity }} {{ item.mesure }}</div>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
           </CarouselItem>
         </CarouselContent>
