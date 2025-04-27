@@ -69,8 +69,6 @@ const submit = () => {
   // Émission de l'événement pour mettre à jour l'ingrédient
   emit('update:ingredient', updatedIngredient)
 
-  console.log('Updated ingredient:', updatedIngredient)
-
   toast({
     title: 'Stockage mis à jour',
     description: `La quantité de ${props.ingredient.label} a été mise à jour à ${quantity.value} ${props.ingredient.mesure}.`,

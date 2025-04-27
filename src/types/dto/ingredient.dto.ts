@@ -5,4 +5,6 @@ export interface IngredientDto {
   max_quantity: number
   mesure: string
   percentage?: number
+  type?: string
+  type_id?: number
 }

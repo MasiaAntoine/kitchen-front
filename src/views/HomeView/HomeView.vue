@@ -74,6 +74,38 @@ const updateCongelateurIngredients = (updatedIngredients: IngredientDto[]) => {
   }))
 }
 
+// Fonction pour ajouter un nouvel ingrédient
+const handleIngredientAdded = (newIngredient: IngredientDto) => {
+  // Calculer le pourcentage pour l'ingrédient ajouté
+  const ingredientWithPercentage = {
+    ...newIngredient,
+    percentage: calculatePercentage(newIngredient.quantity, newIngredient.max_quantity),
+  }
+
+  // Directement utiliser le type fourni dans l'objet
+  switch (newIngredient.type) {
+    case 'Placard':
+      placardIngredients.value = [...placardIngredients.value, ingredientWithPercentage]
+      break
+    case 'Frigo':
+      frigoIngredients.value = [...frigoIngredients.value, ingredientWithPercentage]
+      break
+    case 'Congélateur':
+      congelateurIngredients.value = [...congelateurIngredients.value, ingredientWithPercentage]
+      break
+    default:
+      console.warn(`Type inconnu: ${newIngredient.type}`)
+      // Si le type est inconnu, on peut utiliser un fallback basé sur type_id
+      if (newIngredient.type_id === 1) {
+        placardIngredients.value = [...placardIngredients.value, ingredientWithPercentage]
+      } else if (newIngredient.type_id === 2) {
+        frigoIngredients.value = [...frigoIngredients.value, ingredientWithPercentage]
+      } else if (newIngredient.type_id === 3) {
+        congelateurIngredients.value = [...congelateurIngredients.value, ingredientWithPercentage]
+      }
+  }
+}
+
 // Surveiller les changements de données
 watch(
   () => ingredientsByType.value,
@@ -88,7 +120,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <MenuPlus />
+  <MenuPlus @ingredient-added="handleIngredientAdded" />
   <AppSidebar>
     <div class="flex gap-3 flex-col">
       <div class="flex gap-3">

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 
 import { useToast } from '@/components/ui/toast/use-toast'
-import { IngredientDto } from '@/types/dto'
+import type { IngredientDto, TypesDto, MeasuresDto } from '@/types/dto'
 
 import {
   Dialog,
@@ -38,13 +38,23 @@ import {
 } from '@/components/ui/select'
 
 // Import des hooks personnalisés
-import { useFetchTypes } from '@/hooks/typesHooks'
-import { useFetchMeasures } from '@/hooks/measuresHooks'
-import { useCreateIngredient } from '@/hooks/ingredientsHooks'
+import { useFetchTypes, useFetchMeasures, useCreateIngredient } from '@/hooks'
 
 const { toast } = useToast()
 const dialogOpen = ref(false)
 const isSubmitting = ref(false)
+const createdIngredient = ref<IngredientDto | null>(null)
+
+// Créer des computed properties pour simplifier l'accès aux données
+const types = computed(() => {
+  // Adapter selon la structure réelle retournée par votre API
+  return typesResponse.value?.data?.data || []
+})
+
+const measures = computed(() => {
+  // Adapter selon la structure réelle retournée par votre API
+  return measuresResponse.value?.data?.data || []
+})
 
 // Utilisation des hooks pour récupérer les données
 const { data: typesResponse, isPending: isLoadingTypes } = useFetchTypes()
@@ -58,6 +68,19 @@ interface IngredientFormDto {
   type_id: number | undefined
   measure_id: number | undefined
   max_quantity: number | undefined
+}
+
+const emit = defineEmits<{
+  'ingredient-added': [ingredient: IngredientDto]
+}>()
+
+// Fonction pour déterminer le nom du type à partir de l'ID
+const getTypeNameById = (id: number | undefined) => {
+  if (!id) return undefined
+
+  // Correction : ajout du type explicite pour le paramètre 't'
+  const foundType = types.value.find((t: TypesDto) => t.id === id)
+  return foundType ? foundType.name : undefined
 }
 
 // Validation Schema
@@ -93,6 +116,7 @@ const { value: measure_id } = useField<number | undefined>('measure_id')
 const { value: max_quantity } = useField<number | undefined>('max_quantity')
 
 // Observer les changements d'état après la création
+
 watch(
   () => isSuccess.value,
   (success) => {
@@ -102,10 +126,16 @@ watch(
         description: 'Ingrédient ajouté avec succès',
       })
 
-      // Réinitialiser les valeurs
-      resetForm()
-      // Fermer la boîte de dialogue
-      dialogOpen.value = false
+      // Récupérer le type sélectionné en utilisant notre fonction helper
+      const typeName = getTypeNameById(type_id.value)
+
+      // Correction : ajout du type explicite pour le paramètre 'm'
+      const selectedMeasure = measures.value.find((m: MeasuresDto) => m.id === measure_id.value)
+
+      // Si nous avons un ingrédient créé dans la réponse de l'API
+      if (createdIngredient.value) {
+        // ...reste du code...
+      }
     }
   },
 )
@@ -132,7 +162,7 @@ const resetForm = () => {
   is_connected.value = false
 }
 
-const onSubmit = handleSubmit((values: IngredientFormDto) => {
+const onSubmit = handleSubmit((values) => {
   isSubmitting.value = true
 
   // Créer l'objet exactement dans le format attendu par l'API
@@ -144,10 +174,15 @@ const onSubmit = handleSubmit((values: IngredientFormDto) => {
     max_quantity: values.max_quantity,
   }
 
-  console.log("Données envoyées à l'API:", ingredientToCreate)
-
-  // Appel à l'API via le hook de mutation
-  createIngredient(ingredientToCreate)
+  // Appel à l'API via le hook de mutation avec callback pour récupérer la réponse
+  createIngredient(ingredientToCreate, {
+    onSuccess: (response) => {
+      // Stocker l'ingrédient créé
+      if (response.data?.status === 'success' && response.data?.data) {
+        createdIngredient.value = response.data.data
+      }
+    },
+  })
 
   // La gestion du succès et des erreurs est faite dans les watchers
   isSubmitting.value = false

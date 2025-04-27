@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { IngredientDto } from '@/types/dto'
+
 import AddIngredient from './AddIngredient.vue'
 
 import {
@@ -10,6 +12,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Plus } from 'lucide-vue-next'
+
+const emit = defineEmits<{
+  'ingredient-added': [ingredient: IngredientDto]
+}>()
+
+const handleIngredientAdded = (ingredient: IngredientDto) => {
+  emit('ingredient-added', ingredient)
+}
 </script>
 
 <template>
@@ -21,7 +31,7 @@ import { Plus } from 'lucide-vue-next'
       <DropdownMenuContent>
         <DropdownMenuLabel>Ingrédients</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <AddIngredient />
+        <AddIngredient @ingredient-added="handleIngredientAdded" />
       </DropdownMenuContent>
     </DropdownMenu>
   </div>
