@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
@@ -37,7 +37,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-// Import des hooks personnalisés
 import { useFetchTypes, useFetchMeasures, useCreateIngredient } from '@/hooks'
 
 const { toast } = useToast()
@@ -45,23 +44,18 @@ const dialogOpen = ref(false)
 const isSubmitting = ref(false)
 const createdIngredient = ref<IngredientDto | null>(null)
 
-// Créer des computed properties pour simplifier l'accès aux données
 const types = computed(() => {
-  // Adapter selon la structure réelle retournée par votre API
   return typesResponse.value?.data?.data || []
 })
 
 const measures = computed(() => {
-  // Adapter selon la structure réelle retournée par votre API
   return measuresResponse.value?.data?.data || []
 })
 
-// Utilisation des hooks pour récupérer les données
 const { data: typesResponse, isPending: isLoadingTypes } = useFetchTypes()
 const { data: measuresResponse, isPending: isLoadingMeasures } = useFetchMeasures()
 const { createIngredient, isPending: isCreating, isSuccess, isError, error } = useCreateIngredient()
 
-// Définition de l'interface pour le formulaire
 interface IngredientFormDto {
   label: string
   is_connected: boolean
@@ -74,7 +68,6 @@ const emit = defineEmits<{
   'ingredient-added': [ingredient: IngredientDto]
 }>()
 
-// Fonction pour déterminer le nom du type à partir de l'ID
 const getTypeNameById = (id: number | undefined) => {
   if (!id) return undefined
 
@@ -83,7 +76,6 @@ const getTypeNameById = (id: number | undefined) => {
   return foundType ? foundType.name : undefined
 }
 
-// Validation Schema
 const formSchema = toTypedSchema(
   z.object({
     label: z.string().min(2, "Le nom de l'ingrédient est requis"),
@@ -96,7 +88,6 @@ const formSchema = toTypedSchema(
   }),
 )
 
-// Utiliser useForm avec le DTO approprié
 const { handleSubmit, errors, meta } = useForm<IngredientFormDto>({
   validationSchema: formSchema,
   initialValues: {
@@ -108,52 +99,12 @@ const { handleSubmit, errors, meta } = useForm<IngredientFormDto>({
   },
 })
 
-// Utiliser useField pour chaque champ
 const { value: label } = useField<string>('label')
 const { value: is_connected } = useField<boolean>('is_connected')
 const { value: type_id } = useField<number | undefined>('type_id')
 const { value: measure_id } = useField<number | undefined>('measure_id')
 const { value: max_quantity } = useField<number | undefined>('max_quantity')
 
-// Observer les changements d'état après la création
-
-watch(
-  () => isSuccess.value,
-  (success) => {
-    if (success) {
-      toast({
-        title: 'Succès',
-        description: 'Ingrédient ajouté avec succès',
-      })
-
-      // Récupérer le type sélectionné en utilisant notre fonction helper
-      const typeName = getTypeNameById(type_id.value)
-
-      // Correction : ajout du type explicite pour le paramètre 'm'
-      const selectedMeasure = measures.value.find((m: MeasuresDto) => m.id === measure_id.value)
-
-      // Si nous avons un ingrédient créé dans la réponse de l'API
-      if (createdIngredient.value) {
-        // ...reste du code...
-      }
-    }
-  },
-)
-
-watch(
-  () => isError.value,
-  (hasError) => {
-    if (hasError && error.value) {
-      toast({
-        title: 'Erreur',
-        description: `Échec de l'ajout : ${error.value.message || 'Une erreur est survenue'}`,
-        variant: 'destructive',
-      })
-    }
-  },
-)
-
-// Fonction pour réinitialiser le formulaire
 const resetForm = () => {
   label.value = ''
   type_id.value = undefined
@@ -165,7 +116,6 @@ const resetForm = () => {
 const onSubmit = handleSubmit((values) => {
   isSubmitting.value = true
 
-  // Créer l'objet exactement dans le format attendu par l'API
   const ingredientToCreate = {
     label: values.label,
     is_connected: values.is_connected,
@@ -174,17 +124,35 @@ const onSubmit = handleSubmit((values) => {
     max_quantity: values.max_quantity,
   }
 
-  // Appel à l'API via le hook de mutation avec callback pour récupérer la réponse
   createIngredient(ingredientToCreate, {
     onSuccess: (response) => {
-      // Stocker l'ingrédient créé
+      toast({
+        title: 'Succès',
+        description: 'Ingrédient ajouté avec succès',
+      })
+
       if (response.data?.status === 'success' && response.data?.data) {
         createdIngredient.value = response.data.data
       }
+
+      const type = getTypeNameById(type_id.value)
+
+      createdIngredient.value.type = type
+
+      emit('ingredient-added', createdIngredient.value)
+
+      dialogOpen.value = false
+      resetForm()
+    },
+    isError: (error) => {
+      toast({
+        title: 'Erreur',
+        description: `Échec de l'ajout : ${error.message || 'Une erreur est survenue'}`,
+        variant: 'destructive',
+      })
     },
   })
 
-  // La gestion du succès et des erreurs est faite dans les watchers
   isSubmitting.value = false
 })
 </script>

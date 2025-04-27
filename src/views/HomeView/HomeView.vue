@@ -94,15 +94,8 @@ const handleIngredientAdded = (newIngredient: IngredientDto) => {
       congelateurIngredients.value = [...congelateurIngredients.value, ingredientWithPercentage]
       break
     default:
-      console.warn(`Type inconnu: ${newIngredient.type}`)
-      // Si le type est inconnu, on peut utiliser un fallback basé sur type_id
-      if (newIngredient.type_id === 1) {
-        placardIngredients.value = [...placardIngredients.value, ingredientWithPercentage]
-      } else if (newIngredient.type_id === 2) {
-        frigoIngredients.value = [...frigoIngredients.value, ingredientWithPercentage]
-      } else if (newIngredient.type_id === 3) {
-        congelateurIngredients.value = [...congelateurIngredients.value, ingredientWithPercentage]
-      }
+      console.error("Type d'ingrédient inconnu:", newIngredient.type)
+      break
   }
 }
 
