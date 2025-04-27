@@ -30,6 +30,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 const props = defineProps<{
   newIngredient?: IngredientDto
+  deletedIngredientIds?: number[]
 }>()
 
 const { data, isError, error, isPending } = useFetchIngredientsConnected()
@@ -56,6 +57,19 @@ const formatApiData = (apiData: any[]): IngredientDto[] => {
     percentage: calculatePercentage(ingredient.quantity, ingredient.max_quantity || 1000),
   }))
 }
+
+// Observer les suppressions d'ingrédients
+watch(
+  () => props.deletedIngredientIds,
+  (newDeletedIds) => {
+    if (newDeletedIds && newDeletedIds.length > 0) {
+      gaugeData.value = gaugeData.value.filter(
+        (ingredient) => !ingredient.id || !newDeletedIds.includes(ingredient.id),
+      )
+    }
+  },
+  { immediate: true },
+)
 
 // Observer les changements de données de l'API
 watch(

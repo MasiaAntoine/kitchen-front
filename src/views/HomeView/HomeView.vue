@@ -14,6 +14,31 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { ShoppingBasket, Refrigerator, Snowflake } from 'lucide-vue-next'
 
 const newConnectedIngredient = ref<IngredientDto | null>(null)
+const recentlyDeletedIngredientIds = ref<number[]>([])
+
+const handleIngredientsDeleted = (deletedIds: number[]) => {
+  recentlyDeletedIngredientIds.value = deletedIds
+
+  placardIngredients.value = placardIngredients.value.filter(
+    (ingredient) => !ingredient.id || !deletedIds.includes(ingredient.id),
+  )
+
+  frigoIngredients.value = frigoIngredients.value.filter(
+    (ingredient) => !ingredient.id || !deletedIds.includes(ingredient.id),
+  )
+
+  congelateurIngredients.value = congelateurIngredients.value.filter(
+    (ingredient) => !ingredient.id || !deletedIds.includes(ingredient.id),
+  )
+
+  if (
+    newConnectedIngredient.value &&
+    newConnectedIngredient.value.id &&
+    deletedIds.includes(newConnectedIngredient.value.id)
+  ) {
+    newConnectedIngredient.value = null
+  }
+}
 
 // Fonction pour calculer le pourcentage automatiquement
 const calculatePercentage = (quantity: number, maxQuantity: number): number => {
@@ -119,11 +144,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <MenuSetting @ingredient-added="handleIngredientAdded" />
+  <MenuSetting
+    @ingredient-added="handleIngredientAdded"
+    @ingredients-deleted="handleIngredientsDeleted"
+  />
   <AppSidebar>
     <div class="flex gap-3 flex-col">
       <div class="flex gap-3">
-        <ConnectedIngredients :new-ingredient="newConnectedIngredient || undefined" />
+        <ConnectedIngredients
+          :new-ingredient="newConnectedIngredient || undefined"
+          :deleted-ingredient-ids="recentlyDeletedIngredientIds"
+        />
         <SmartRecipes />
       </div>
 

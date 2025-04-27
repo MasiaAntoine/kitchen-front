@@ -46,6 +46,10 @@ interface Ingredient {
   mesure: string
 }
 
+const emit = defineEmits<{
+  'ingredients-deleted': [ids: number[]]
+}>()
+
 const dialogOpen = ref(false)
 const { toast } = useToast()
 const searchQuery = ref('')
@@ -163,6 +167,7 @@ const handleDelete = () => {
         title: 'Succès',
         description: 'Ingrédients supprimés avec succès',
       })
+      emit('ingredients-deleted', ids)
       closeDialog()
     },
     onError: (error) => {

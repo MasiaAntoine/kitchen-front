@@ -17,6 +17,7 @@ import { Settings } from 'lucide-vue-next'
 
 const emit = defineEmits<{
   'ingredient-added': [ingredient: IngredientDto]
+  'ingredients-deleted': [ids: number[]]
 }>()
 
 const isOpen = ref(false)
@@ -32,6 +33,11 @@ const handleIngredientAdded = (ingredient: IngredientDto) => {
   closeDropdown()
   emit('ingredient-added', ingredient)
 }
+
+const handleIngredientsDeleted = (ids: number[]) => {
+  closeDropdown()
+  emit('ingredients-deleted', ids)
+}
 </script>
 
 <template>
@@ -45,7 +51,7 @@ const handleIngredientAdded = (ingredient: IngredientDto) => {
         <DropdownMenuSeparator />
         <div class="flex flex-col gap-2 p-2">
           <AddIngredient @ingredient-added="handleIngredientAdded" />
-          <DeleteIngredient />
+          <DeleteIngredient @ingredients-deleted="handleIngredientsDeleted" />
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
