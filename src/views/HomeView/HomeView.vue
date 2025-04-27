@@ -6,6 +6,7 @@ import { useFetchIngredientsByType } from '@/hooks'
 
 import AppSidebar from '@/components/AppSidebar.vue'
 import ConnectedIngredients from './components/ConnectedIngredients.vue'
+import MenuPlus from './components/MenuPlus.vue'
 import SmartRecipes from './components/SmartRecipes.vue'
 import CardStockage from '@/components/CardStockage.vue'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -87,6 +88,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <MenuPlus />
   <AppSidebar>
     <div class="flex gap-3 flex-col">
       <div class="flex gap-3">
