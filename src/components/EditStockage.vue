@@ -35,11 +35,11 @@ const counter = ref<number>(1)
 const counterValues = [1, 10, 20, 30, 50, 100, 200, 500, 1000]
 
 onMounted(() => {
-  if (props.ingredient.mesure === 'grammes') {
+  if (props.ingredient.mesure === 'Grammes') {
     counter.value = 100
-  } else if (props.ingredient.mesure === 'millilitres') {
+  } else if (props.ingredient.mesure === 'Millilitres') {
     counter.value = 100
-  } else if (props.ingredient.mesure === 'pièce') {
+  } else if (props.ingredient.mesure === 'Pièce') {
     counter.value = 1
   }
 })
@@ -89,13 +89,13 @@ const submit = () => {
             >Mettez à jour la quantité en {{ props.ingredient.mesure }}.</DrawerDescription
           >
         </DrawerHeader>
-        <div class="flex flex-wrap justify-center gap-2 p-4">
+        <div class="flex flex-wrap justify-center gap-4">
           <Button
             v-for="value in counterValues"
             :key="value"
             :variant="getButtonVariant(value)"
             @click="counter = value"
-            class="min-w-[3rem]"
+            class="min-w-[3rem] text-3xl py-6"
           >
             {{ value }}
           </Button>
@@ -105,7 +105,7 @@ const submit = () => {
             <Button
               variant="outline"
               size="icon"
-              class="h-8 w-8 shrink-0 rounded-full"
+              class="size-16 shrink-0 rounded-full"
               :disabled="quantity <= 0"
               @click="quantity -= counter"
             >
@@ -122,7 +122,7 @@ const submit = () => {
             <Button
               variant="outline"
               size="icon"
-              class="h-8 w-8 shrink-0 rounded-full"
+              class="size-16 shrink-0 rounded-full"
               @click="quantity += counter"
             >
               <Plus class="h-4 w-4" />
