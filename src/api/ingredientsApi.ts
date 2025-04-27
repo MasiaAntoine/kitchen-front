@@ -14,3 +14,8 @@ export const updateIngredientQuantity = async (id: number, data: object) => {
   const response = await axios.patch(`/ingredients/${id}/quantity`, data)
   return response
 }
+
+export const fetchIngredientsLowStock = async () => {
+  const response = await axios.get(`/ingredients/low-stock`)
+  return response
+}

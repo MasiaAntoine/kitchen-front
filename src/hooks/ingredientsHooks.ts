@@ -1,5 +1,10 @@
 import { useQuery, useMutation } from '@tanstack/vue-query'
-import { fetchIngredientsConnected, fetchIngredientsByType, updateIngredientQuantity } from '@/api'
+import {
+  fetchIngredientsConnected,
+  fetchIngredientsByType,
+  updateIngredientQuantity,
+  fetchIngredientsLowStock,
+} from '@/api'
 
 export function useFetchIngredientsConnected() {
   const { data, isError, error, isPending } = useQuery({
@@ -41,6 +46,20 @@ export function useUpdateIngredientQuantity() {
     isPending,
     isError,
     isSuccess,
+    error,
+  }
+}
+
+export function useFetchIngredientsLowStock() {
+  const { data, isError, error, isPending } = useQuery({
+    queryKey: ['ingredientsLowStock'],
+    queryFn: fetchIngredientsLowStock,
+  })
+
+  return {
+    data,
+    isPending,
+    isError,
     error,
   }
 }

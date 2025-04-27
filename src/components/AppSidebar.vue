@@ -4,7 +4,7 @@ import type { MenuItemDto } from '@/types/dto'
 import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 
-import { Calendar, Home, Inbox, Search, Settings, ChevronDown } from 'lucide-vue-next'
+import { ShoppingBasket, Home, ChevronDown } from 'lucide-vue-next'
 
 import {
   Sidebar,
@@ -25,8 +25,13 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 const menuItem = ref<MenuItemDto[]>([
   {
     title: 'Accueil',
-    url: '',
+    url: '/',
     icon: Home,
+  },
+  {
+    title: 'Liste des courses',
+    url: '/shopping-list',
+    icon: ShoppingBasket,
   },
   // {
   //   title: 'Inbox',
