@@ -79,7 +79,7 @@ const getTypeNameById = (id: number | undefined) => {
 const formSchema = toTypedSchema(
   z.object({
     label: z.string().min(2, "Le nom de l'ingrédient est requis"),
-    is_connected: z.boolean().default(true),
+    is_connected: z.boolean().default(false),
     type_id: z.number({ required_error: 'Veuillez sélectionner un type' }),
     measure_id: z.number({ required_error: 'Veuillez sélectionner une unité de mesure' }),
     max_quantity: z.coerce
@@ -254,16 +254,17 @@ const onSubmit = handleSubmit((values) => {
           </FormItem>
         </FormField>
 
-        <FormField name="is_connected" v-slot="{ componentField }">
+        <FormField name="is_connected" v-slot="{ componentField, errorMessage }">
           <FormItem class="flex flex-row items-start space-x-3 space-y-0">
             <FormControl>
-              <Checkbox v-model="is_connected" v-bind="componentField" />
+              <Checkbox v-model="is_connected" :value="true" name="is_connected" />
             </FormControl>
             <div class="space-y-1 leading-none">
               <FormLabel>Connecté</FormLabel>
               <FormDescription>
                 Indiquez si cet ingrédient est connecté à un capteur.
               </FormDescription>
+              <FormMessage>{{ errorMessage }}</FormMessage>
             </div>
           </FormItem>
         </FormField>
