@@ -25,6 +25,10 @@ import {
 
 import { Skeleton } from '@/components/ui/skeleton'
 
+const props = defineProps<{
+  newIngredient?: IngredientDto
+}>()
+
 const { data, isError, error, isPending } = useFetchIngredientsConnected()
 
 // Fonction pour calculer le pourcentage automatiquement
@@ -59,6 +63,35 @@ watch(
     }
   },
   { immediate: true },
+)
+
+// Observer l'ajout d'un nouvel ingrédient connecté
+watch(
+  () => props.newIngredient,
+  (newIngredient) => {
+    if (newIngredient && newIngredient.is_connected) {
+      // Formater le nouvel ingrédient avec le pourcentage calculé
+      const formattedIngredient = {
+        id: newIngredient.id.toString(),
+        label: newIngredient.label,
+        quantity: newIngredient.quantity || 0,
+        max_quantity: newIngredient.max_quantity,
+        mesure: newIngredient.mesure || '',
+        percentage: calculatePercentage(
+          newIngredient.quantity || 0,
+          newIngredient.max_quantity || 1000,
+        ),
+      }
+
+      // Vérifier si l'ingrédient n'est pas déjà dans la liste
+      const exists = gaugeData.value.some((item) => item.id === formattedIngredient.id)
+
+      if (!exists) {
+        gaugeData.value = [...gaugeData.value, formattedIngredient]
+      }
+    }
+  },
+  { deep: true },
 )
 
 const itemsPerSlide = 4

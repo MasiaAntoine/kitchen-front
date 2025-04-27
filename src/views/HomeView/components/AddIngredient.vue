@@ -137,6 +137,7 @@ const onSubmit = handleSubmit((values) => {
         if (createdIngredient.value) {
           const type = getTypeNameById(type_id.value)
           createdIngredient.value.type = type
+          createdIngredient.value.is_connected = values.is_connected
           emit('ingredient-added', createdIngredient.value)
         }
 

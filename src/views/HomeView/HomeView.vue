@@ -13,6 +13,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 import { ShoppingBasket, Refrigerator, Snowflake } from 'lucide-vue-next'
 
+const newConnectedIngredient = ref<IngredientDto | null>(null)
+
 // Fonction pour calculer le pourcentage automatiquement
 const calculatePercentage = (quantity: number, maxQuantity: number): number => {
   if (!maxQuantity || maxQuantity <= 0) return 0
@@ -82,6 +84,10 @@ const handleIngredientAdded = (newIngredient: IngredientDto) => {
     percentage: calculatePercentage(newIngredient.quantity, newIngredient.max_quantity),
   }
 
+  if (newIngredient.is_connected) {
+    newConnectedIngredient.value = ingredientWithPercentage
+  }
+
   // Directement utiliser le type fourni dans l'objet
   switch (newIngredient.type) {
     case 'Placard':
@@ -117,7 +123,7 @@ onMounted(() => {
   <AppSidebar>
     <div class="flex gap-3 flex-col">
       <div class="flex gap-3">
-        <ConnectedIngredients />
+        <ConnectedIngredients :new-ingredient="newConnectedIngredient" />
         <SmartRecipes />
       </div>
 
