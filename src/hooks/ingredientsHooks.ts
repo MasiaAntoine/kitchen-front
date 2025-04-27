@@ -6,6 +6,7 @@ import {
   fetchIngredientsLowStock,
   createIngredient,
   fetchIngredients,
+  deleteIngredientBatch,
 } from '@/api'
 
 export function useFetchIngredientsConnected() {
@@ -90,6 +91,20 @@ export function useFetchIngredients() {
     data,
     isPending,
     isError,
+    error,
+  }
+}
+
+export function useDeleteIngredientBatch() {
+  const { mutate, isPending, isError, error, isSuccess } = useMutation({
+    mutationFn: (ids: number[]) => deleteIngredientBatch({ ids }),
+  })
+
+  return {
+    deleteIngredientBatch: mutate,
+    isPending,
+    isError,
+    isSuccess,
     error,
   }
 }

@@ -36,7 +36,7 @@ import {
 } from '@/components/ui/table'
 import { Input } from '@/components/ui/input'
 
-import { useFetchIngredients } from '@/hooks'
+import { useFetchIngredients, useDeleteIngredientBatch } from '@/hooks'
 
 interface Ingredient {
   id: number
@@ -50,6 +50,7 @@ const dialogOpen = ref(false)
 const { toast } = useToast()
 const searchQuery = ref('')
 
+const { deleteIngredientBatch, isError, error, isSuccess } = useDeleteIngredientBatch()
 const { data: ingredientsResponse, isPending } = useFetchIngredients()
 
 const ingredients = computed(() => {
@@ -155,14 +156,22 @@ const handleSearch = (event: Event) => {
 
 const handleDelete = () => {
   const ids = selectedIngredients.value
-  console.log('Ingrédients à supprimer :', ids)
 
-  toast({
-    title: 'Suppression',
-    description: `${ids.length} ingrédient(s) sélectionné(s) pour suppression`,
+  deleteIngredientBatch(ids, {
+    onSuccess: () => {
+      toast({
+        title: 'Succès',
+        description: 'Ingrédients supprimés avec succès',
+      })
+      closeDialog()
+    },
+    onError: (error) => {
+      toast({
+        title: 'Erreur',
+        description: `Erreur lors de la suppression : ${error.message}`,
+      })
+    },
   })
-  // Ici vous implémenteriez la logique réelle de suppression
-  // rowSelection.value = {} // Réinitialiser après suppression
 }
 
 const closeDialog = () => {

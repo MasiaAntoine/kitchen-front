@@ -29,3 +29,10 @@ export const fetchIngredients = async () => {
   const response = await axios.get(`/ingredients`)
   return response
 }
+
+export const deleteIngredientBatch = async (data: object) => {
+  const response = await axios.delete(`/ingredients/batch`, {
+    data: data,
+  })
+  return response
+}
