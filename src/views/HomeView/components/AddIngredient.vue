@@ -5,7 +5,7 @@ import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 
 import { useToast } from '@/components/ui/toast/use-toast'
-import { IngredientDto, TypesDto, MeasuresDto } from '@/types/dto'
+import { IngredientDto } from '@/types/dto'
 
 import {
   Dialog,
@@ -37,25 +37,19 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
+// Import des hooks personnalisés
+import { useFetchTypes } from '@/hooks/typesHooks'
+import { useFetchMeasures } from '@/hooks/measuresHooks'
+
 const { toast } = useToast()
 const dialogOpen = ref(false)
 const isSubmitting = ref(false)
 
-// Données brutes pour les types d'ingrédients avec le DTO TypesDto
-const types: TypesDto[] = [
-  { id: 1, name: 'Placard' },
-  { id: 2, name: 'Frigo' },
-  { id: 3, name: 'Congélateur' },
-]
+// Utilisation des hooks pour récupérer les données
+const { data: typesResponse, isPending: isLoadingTypes } = useFetchTypes()
+const { data: measuresResponse, isPending: isLoadingMeasures } = useFetchMeasures()
 
-// Données brutes pour les unités de mesure avec le DTO MeasuresDto
-const measures: MeasuresDto[] = [
-  { id: 1, name: 'Grammes', symbol: 'g' },
-  { id: 2, name: 'Millilitres', symbol: 'ml' },
-  { id: 3, name: 'Pièce', symbol: 'pc' },
-]
-
-// Définition de l'interface pour le formulaire (basée sur IngredientDto avec des champs supplémentaires)
+// Définition de l'interface pour le formulaire
 interface IngredientFormDto {
   label: string
   is_connected: boolean
@@ -99,8 +93,8 @@ const { value: max_quantity } = useField<number | undefined>('max_quantity')
 const onSubmit = handleSubmit((values: IngredientFormDto) => {
   isSubmitting.value = true
 
-  // Récupérer la mesure sélectionnée
-  const selectedMeasure = measures.find((m) => m.id === values.measure_id)
+  // Récupérer la mesure sélectionnée depuis les données de l'API
+  const selectedMeasure = measuresResponse.value?.data.find((m) => m.id === values.measure_id)
 
   // Créer un objet IngredientDto conforme à l'interface
   const ingredientToAdd: IngredientDto = {
@@ -113,6 +107,11 @@ const onSubmit = handleSubmit((values: IngredientFormDto) => {
 
   console.log('Ingrédient à ajouter (DTO):', ingredientToAdd)
   console.log('Valeurs brutes du formulaire:', values)
+  console.log(
+    'Type sélectionné:',
+    typesResponse.value?.data.find((t) => t.id === values.type_id),
+  )
+  console.log('Mesure sélectionnée:', selectedMeasure)
 
   // Simuler une soumission réussie
   setTimeout(() => {
@@ -149,7 +148,14 @@ const onSubmit = handleSubmit((values: IngredientFormDto) => {
         </DialogDescription>
       </DialogHeader>
 
-      <form @submit="onSubmit" class="space-y-4">
+      <div v-if="isLoadingTypes || isLoadingMeasures" class="flex justify-center py-8">
+        <div
+          class="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"
+        ></div>
+        <span class="sr-only">Chargement...</span>
+      </div>
+
+      <form v-else @submit="onSubmit" class="space-y-4">
         <FormField name="label" v-slot="{ componentField, errorMessage }">
           <FormItem>
             <FormLabel>Nom</FormLabel>
@@ -174,7 +180,11 @@ const onSubmit = handleSubmit((values: IngredientFormDto) => {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem v-for="type in types" :key="type.id" :value="type.id">
+                <SelectItem
+                  v-for="type in typesResponse?.data.data"
+                  :key="type.id"
+                  :value="type.id"
+                >
                   {{ type.name }}
                 </SelectItem>
               </SelectContent>
@@ -193,7 +203,11 @@ const onSubmit = handleSubmit((values: IngredientFormDto) => {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem v-for="measure in measures" :key="measure.id" :value="measure.id">
+                <SelectItem
+                  v-for="measure in measuresResponse?.data.data"
+                  :key="measure.id"
+                  :value="measure.id"
+                >
                   {{ measure.name }} ({{ measure.symbol }})
                 </SelectItem>
               </SelectContent>
