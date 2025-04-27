@@ -44,6 +44,9 @@ const dialogOpen = ref(false)
 const isSubmitting = ref(false)
 const createdIngredient = ref<IngredientDto | null>(null)
 
+const addSound = new Audio('/src/assets/sounds/add.mp3')
+const errorSound = new Audio('/src/assets/sounds/error.mp3')
+
 const types = computed(() => {
   return typesResponse.value?.data?.data || []
 })
@@ -131,6 +134,7 @@ const onSubmit = handleSubmit((values) => {
           title: 'Succès',
           description: 'Ingrédient ajouté avec succès',
         })
+        addSound.play()
 
         createdIngredient.value = response.data.data
 
@@ -151,6 +155,7 @@ const onSubmit = handleSubmit((values) => {
         description: `Échec de l'ajout : ${error.message || 'Une erreur est survenue'}`,
         variant: 'destructive',
       })
+      errorSound.play()
     },
   })
 

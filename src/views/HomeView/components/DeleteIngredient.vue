@@ -54,6 +54,8 @@ const dialogOpen = ref(false)
 const { toast } = useToast()
 const searchQuery = ref('')
 
+const deleteSound = new Audio('/src/assets/sounds/delete.mp3')
+
 const { deleteIngredientBatch, isError, error, isSuccess } = useDeleteIngredientBatch()
 const { data: ingredientsResponse, isPending } = useFetchIngredients()
 
@@ -167,6 +169,7 @@ const handleDelete = () => {
         title: 'Succès',
         description: 'Ingrédients supprimés avec succès',
       })
+      deleteSound.play()
       emit('ingredients-deleted', ids)
       closeDialog()
     },
