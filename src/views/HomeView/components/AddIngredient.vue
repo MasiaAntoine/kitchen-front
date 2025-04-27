@@ -126,25 +126,25 @@ const onSubmit = handleSubmit((values) => {
 
   createIngredient(ingredientToCreate, {
     onSuccess: (response) => {
-      toast({
-        title: 'Succès',
-        description: 'Ingrédient ajouté avec succès',
-      })
+      if (response.data?.data) {
+        toast({
+          title: 'Succès',
+          description: 'Ingrédient ajouté avec succès',
+        })
 
-      if (response.data?.status === 'success' && response.data?.data) {
         createdIngredient.value = response.data.data
+
+        if (createdIngredient.value) {
+          const type = getTypeNameById(type_id.value)
+          createdIngredient.value.type = type
+          emit('ingredient-added', createdIngredient.value)
+        }
+
+        resetForm()
+        dialogOpen.value = false
       }
-
-      const type = getTypeNameById(type_id.value)
-
-      createdIngredient.value.type = type
-
-      emit('ingredient-added', createdIngredient.value)
-
-      dialogOpen.value = false
-      resetForm()
     },
-    isError: (error) => {
+    onError: (error) => {
       toast({
         title: 'Erreur',
         description: `Échec de l'ajout : ${error.message || 'Une erreur est survenue'}`,
