@@ -52,7 +52,7 @@ const getButtonVariant = (value: number) => {
 const calculatePercentage = (quantity: number) => {
   // Vous pouvez ajuster cette logique selon votre cas d'utilisation
   // Par exemple, si vous avez une quantité maximale dans votre DTO
-  const maxQuantity = props.ingredient['max-quantity'] || 1000 // Valeur par défaut
+  const maxQuantity = props.ingredient['max_quantity'] || 1000 // Valeur par défaut
   return Math.min(Math.round((quantity / maxQuantity) * 100), 100)
 }
 

@@ -21,12 +21,12 @@ const calculatePercentage = (quantity: number, maxQuantity: number): number => {
 const initIngredientsWithPercentage = (ingredients: IngredientDto[]): IngredientDto[] => {
   return ingredients.map((ingredient) => ({
     ...ingredient,
-    'max-quantity': ingredient.max_quantity,
+    max_quantity: ingredient.max_quantity,
     percentage: calculatePercentage(ingredient.quantity, ingredient.max_quantity || 1000),
   }))
 }
 
-const { data: ingredientsByType, isLoading, isError } = useFetchIngredientsByType()
+const { data: ingredientsByType, isPending, isError } = useFetchIngredientsByType()
 
 // Références réactives pour les ingrédients par type de stockage
 const placardIngredients = ref<IngredientDto[]>([])
@@ -52,7 +52,7 @@ const updatePlacardIngredients = (updatedIngredients: IngredientDto[]) => {
   // Recalculer les pourcentages avant de mettre à jour
   placardIngredients.value = updatedIngredients.map((ingredient) => ({
     ...ingredient,
-    percentage: calculatePercentage(ingredient.quantity, ingredient['max-quantity'] || 1000),
+    percentage: calculatePercentage(ingredient.quantity, ingredient['max_quantity'] || 1000),
   }))
 }
 
@@ -60,7 +60,7 @@ const updateFrigoIngredients = (updatedIngredients: IngredientDto[]) => {
   // Recalculer les pourcentages avant de mettre à jour
   frigoIngredients.value = updatedIngredients.map((ingredient) => ({
     ...ingredient,
-    percentage: calculatePercentage(ingredient.quantity, ingredient['max-quantity'] || 1000),
+    percentage: calculatePercentage(ingredient.quantity, ingredient['max_quantity'] || 1000),
   }))
 }
 
@@ -68,7 +68,7 @@ const updateCongelateurIngredients = (updatedIngredients: IngredientDto[]) => {
   // Recalculer les pourcentages avant de mettre à jour
   congelateurIngredients.value = updatedIngredients.map((ingredient) => ({
     ...ingredient,
-    percentage: calculatePercentage(ingredient.quantity, ingredient['max-quantity'] || 1000),
+    percentage: calculatePercentage(ingredient.quantity, ingredient['max_quantity'] || 1000),
   }))
 }
 
@@ -93,7 +93,7 @@ onMounted(() => {
         <SmartRecipes />
       </div>
 
-      <div v-if="isLoading" class="text-center p-4">Chargement des ingrédients...</div>
+      <div v-if="isPending" class="text-center p-4">Chargement des ingrédients...</div>
 
       <div v-else-if="isError" class="text-center p-4 text-red-500">
         Erreur lors du chargement des ingrédients

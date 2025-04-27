@@ -42,7 +42,7 @@ const formatApiData = (apiData: any[]): IngredientDto[] => {
     id: ingredient.id.toString(),
     label: ingredient.label,
     quantity: ingredient.quantity,
-    'max-quantity': ingredient.max_quantity,
+    max_quantity: ingredient.max_quantity,
     mesure: ingredient.mesure,
     percentage: calculatePercentage(ingredient.quantity, ingredient.max_quantity || 1000),
   }))
