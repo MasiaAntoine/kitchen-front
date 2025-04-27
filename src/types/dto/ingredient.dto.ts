@@ -7,4 +7,5 @@ export interface IngredientDto {
   percentage?: number
   type?: string
   type_id?: number
+  is_connected?: boolean
 }

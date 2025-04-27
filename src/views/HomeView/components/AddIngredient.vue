@@ -257,9 +257,7 @@ const onSubmit = handleSubmit((values) => {
 
         <FormField name="is_connected" v-slot="{ componentField, errorMessage }">
           <FormItem class="flex flex-row items-start space-x-3 space-y-0">
-            <FormControl>
-              <Checkbox v-model="is_connected" :value="true" name="is_connected" />
-            </FormControl>
+            <FormControl> <Checkbox v-model="is_connected" name="is_connected" /> </FormControl>
             <div class="space-y-1 leading-none">
               <FormLabel>Connecté</FormLabel>
               <FormDescription>

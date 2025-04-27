@@ -48,7 +48,7 @@ const formatApiData = (apiData: any[]): IngredientDto[] => {
   if (!apiData || !Array.isArray(apiData)) return []
 
   return apiData.map((ingredient) => ({
-    id: ingredient.id.toString(),
+    id: ingredient.id,
     label: ingredient.label,
     quantity: ingredient.quantity,
     max_quantity: ingredient.max_quantity,
@@ -75,7 +75,7 @@ watch(
     if (newIngredient && newIngredient.is_connected) {
       // Formater le nouvel ingrédient avec le pourcentage calculé
       const formattedIngredient = {
-        id: newIngredient.id.toString(),
+        id: newIngredient.id,
         label: newIngredient.label,
         quantity: newIngredient.quantity || 0,
         max_quantity: newIngredient.max_quantity,
