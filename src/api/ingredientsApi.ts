@@ -1,11 +1,16 @@
 import axios from 'axios'
 
 export const fetchIngredientsConnected = async () => {
-  const data = await axios.get('/ingredients/connected')
-  return data
+  const response = await axios.get('/ingredients/connected')
+  return response
 }
 
 export const fetchIngredientsByType = async () => {
-  const data = await axios.get('/ingredients/by-type')
-  return data
+  const response = await axios.get('/ingredients/by-type')
+  return response
+}
+
+export const updateIngredientQuantity = async (id: number, data) => {
+  const response = await axios.patch(`/ingredients/${id}/quantity`, data)
+  return response
 }

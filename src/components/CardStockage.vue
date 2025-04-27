@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import type { IngredientDto } from '@/types/dto'
-
+import { useUpdateIngredientQuantity } from '@/hooks/ingredientsHooks'
 import EditStockage from './EditStockage.vue'
-
 import type { Component } from 'vue'
-
 import { Button } from '@/components/ui/button'
-
 import {
   Card,
   CardContent,
@@ -15,7 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
 
@@ -28,6 +24,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:ingredients', ingredients: IngredientDto[]): void
 }>()
+
+const { updateQuantity } = useUpdateIngredientQuantity()
 
 const updateIngredient = (updatedIngredient: {
   id: string
@@ -45,7 +43,22 @@ const updateIngredient = (updatedIngredient: {
     return ingredient
   })
 
-  emit('update:ingredients', updatedIngredients)
+  updateQuantity(
+    {
+      id: parseInt(updatedIngredient.id),
+      data: {
+        quantity: updatedIngredient.quantity,
+      },
+    },
+    {
+      onSuccess: () => {
+        emit('update:ingredients', updatedIngredients)
+      },
+      onError: (error) => {
+        console.error('Erreur lors de la mise à jour:', error)
+      },
+    },
+  )
 }
 </script>
 
