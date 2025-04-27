@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
@@ -40,6 +40,7 @@ import {
 // Import des hooks personnalisés
 import { useFetchTypes } from '@/hooks/typesHooks'
 import { useFetchMeasures } from '@/hooks/measuresHooks'
+import { useCreateIngredient } from '@/hooks/ingredientsHooks'
 
 const { toast } = useToast()
 const dialogOpen = ref(false)
@@ -48,6 +49,7 @@ const isSubmitting = ref(false)
 // Utilisation des hooks pour récupérer les données
 const { data: typesResponse, isPending: isLoadingTypes } = useFetchTypes()
 const { data: measuresResponse, isPending: isLoadingMeasures } = useFetchMeasures()
+const { createIngredient, isPending: isCreating, isSuccess, isError, error } = useCreateIngredient()
 
 // Définition de l'interface pour le formulaire
 interface IngredientFormDto {
@@ -90,48 +92,65 @@ const { value: type_id } = useField<number | undefined>('type_id')
 const { value: measure_id } = useField<number | undefined>('measure_id')
 const { value: max_quantity } = useField<number | undefined>('max_quantity')
 
+// Observer les changements d'état après la création
+watch(
+  () => isSuccess.value,
+  (success) => {
+    if (success) {
+      toast({
+        title: 'Succès',
+        description: 'Ingrédient ajouté avec succès',
+      })
+
+      // Réinitialiser les valeurs
+      resetForm()
+      // Fermer la boîte de dialogue
+      dialogOpen.value = false
+    }
+  },
+)
+
+watch(
+  () => isError.value,
+  (hasError) => {
+    if (hasError && error.value) {
+      toast({
+        title: 'Erreur',
+        description: `Échec de l'ajout : ${error.value.message || 'Une erreur est survenue'}`,
+        variant: 'destructive',
+      })
+    }
+  },
+)
+
+// Fonction pour réinitialiser le formulaire
+const resetForm = () => {
+  label.value = ''
+  type_id.value = undefined
+  measure_id.value = undefined
+  max_quantity.value = undefined
+  is_connected.value = false
+}
+
 const onSubmit = handleSubmit((values: IngredientFormDto) => {
   isSubmitting.value = true
 
-  // Récupérer la mesure sélectionnée depuis les données de l'API
-  const selectedMeasure = measuresResponse.value?.data.find((m) => m.id === values.measure_id)
-
-  // Créer un objet IngredientDto conforme à l'interface
-  const ingredientToAdd: IngredientDto = {
+  // Créer l'objet exactement dans le format attendu par l'API
+  const ingredientToCreate = {
     label: values.label,
-    quantity: 0, // Valeur par défaut pour un nouvel ingrédient
-    max_quantity: values.max_quantity || 0,
-    mesure: selectedMeasure?.symbol || '',
-    percentage: 0, // Valeur par défaut pour un nouvel ingrédient
+    is_connected: values.is_connected,
+    type_id: values.type_id,
+    measure_id: values.measure_id,
+    max_quantity: values.max_quantity,
   }
 
-  console.log('Ingrédient à ajouter (DTO):', ingredientToAdd)
-  console.log('Valeurs brutes du formulaire:', values)
-  console.log(
-    'Type sélectionné:',
-    typesResponse.value?.data.find((t) => t.id === values.type_id),
-  )
-  console.log('Mesure sélectionnée:', selectedMeasure)
+  console.log("Données envoyées à l'API:", ingredientToCreate)
 
-  // Simuler une soumission réussie
-  setTimeout(() => {
-    toast({
-      title: 'Succès',
-      description: 'Ingrédient ajouté avec succès',
-    })
+  // Appel à l'API via le hook de mutation
+  createIngredient(ingredientToCreate)
 
-    // Réinitialiser les valeurs
-    label.value = ''
-    type_id.value = undefined
-    measure_id.value = undefined
-    max_quantity.value = undefined
-    is_connected.value = false
-
-    // Fermer la boîte de dialogue
-    dialogOpen.value = false
-
-    isSubmitting.value = false
-  }, 500)
+  // La gestion du succès et des erreurs est faite dans les watchers
+  isSubmitting.value = false
 })
 </script>
 

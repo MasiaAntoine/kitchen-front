@@ -19,3 +19,8 @@ export const fetchIngredientsLowStock = async () => {
   const response = await axios.get(`/ingredients/low-stock`)
   return response
 }
+
+export const createIngredient = async (data: object) => {
+  const response = await axios.post(`/ingredients`, data)
+  return response
+}

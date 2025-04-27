@@ -4,6 +4,7 @@ import {
   fetchIngredientsByType,
   updateIngredientQuantity,
   fetchIngredientsLowStock,
+  createIngredient,
 } from '@/api'
 
 export function useFetchIngredientsConnected() {
@@ -60,6 +61,20 @@ export function useFetchIngredientsLowStock() {
     data,
     isPending,
     isError,
+    error,
+  }
+}
+
+export function useCreateIngredient() {
+  const { mutate, isPending, isError, error, isSuccess } = useMutation({
+    mutationFn: (data: object) => createIngredient(data),
+  })
+
+  return {
+    createIngredient: mutate,
+    isPending,
+    isError,
+    isSuccess,
     error,
   }
 }
