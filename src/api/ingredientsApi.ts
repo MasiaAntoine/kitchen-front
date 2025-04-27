@@ -24,3 +24,8 @@ export const createIngredient = async (data: object) => {
   const response = await axios.post(`/ingredients`, data)
   return response
 }
+
+export const fetchIngredients = async () => {
+  const response = await axios.get(`/ingredients`)
+  return response
+}

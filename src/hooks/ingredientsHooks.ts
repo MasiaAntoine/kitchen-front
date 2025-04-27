@@ -5,6 +5,7 @@ import {
   updateIngredientQuantity,
   fetchIngredientsLowStock,
   createIngredient,
+  fetchIngredients,
 } from '@/api'
 
 export function useFetchIngredientsConnected() {
@@ -75,6 +76,20 @@ export function useCreateIngredient() {
     isPending,
     isError,
     isSuccess,
+    error,
+  }
+}
+
+export function useFetchIngredients() {
+  const { data, isError, error, isPending } = useQuery({
+    queryKey: ['ingredients'],
+    queryFn: fetchIngredients,
+  })
+
+  return {
+    data,
+    isPending,
+    isError,
     error,
   }
 }

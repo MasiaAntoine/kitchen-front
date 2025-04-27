@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import type { IngredientDto } from '@/types/dto'
 
 import AddIngredient from './AddIngredient.vue'
+import DeleteIngredient from './DeleteIngredient.vue'
 
 import {
   DropdownMenu,
@@ -42,7 +43,10 @@ const handleIngredientAdded = (ingredient: IngredientDto) => {
       <DropdownMenuContent>
         <DropdownMenuLabel>Ingrédients</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <AddIngredient @ingredient-added="handleIngredientAdded" />
+        <div class="flex flex-col gap-2 p-2">
+          <AddIngredient @ingredient-added="handleIngredientAdded" />
+          <DeleteIngredient />
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   </div>
