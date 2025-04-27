@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { IngredientDto } from '@/types/dto/ingredient.dto'
 
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
+import { useFetchIngredientsByType } from '@/hooks'
 
 import AppSidebar from '@/components/AppSidebar.vue'
 import ConnectedIngredients from './components/ConnectedIngredients.vue'
@@ -20,60 +21,31 @@ const calculatePercentage = (quantity: number, maxQuantity: number): number => {
 const initIngredientsWithPercentage = (ingredients: IngredientDto[]): IngredientDto[] => {
   return ingredients.map((ingredient) => ({
     ...ingredient,
-    percentage: calculatePercentage(ingredient.quantity, ingredient['max-quantity'] || 1000),
+    'max-quantity': ingredient.max_quantity,
+    percentage: calculatePercentage(ingredient.quantity, ingredient.max_quantity || 1000),
   }))
 }
 
-// Données brutes des ingrédients
-const placardIngredientsRaw = [
-  {
-    id: 1,
-    mesure: 'grammes',
-    quantity: 1000,
-    'max-quantity': 5000,
-    label: 'Pâtes',
-  },
-  { id: 2, mesure: 'grammes', quantity: 765, 'max-quantity': 2000, label: 'Sucre' },
-  {
-    id: 6,
-    mesure: 'grammes',
-    quantity: 200,
-    'max-quantity': 2000,
-    label: 'Farine',
-  },
-  { id: 7, mesure: 'grammes', quantity: 500, 'max-quantity': 5000, label: 'Sel' },
-]
+const { data: ingredientsByType, isLoading, isError } = useFetchIngredientsByType()
 
-const frigoIngredientsRaw = [
-  {
-    id: 3,
-    mesure: 'millilitres',
-    quantity: 340,
-    'max-quantity': 5000,
-    label: 'Lait',
-  },
-  {
-    id: 4,
-    mesure: 'grammes',
-    quantity: 356,
-    'max-quantity': 500,
-    label: 'Beurre',
-  },
-  { id: 5, mesure: 'pièce', quantity: 10, 'max-quantity': 10, label: 'Œufs' },
-]
+// Références réactives pour les ingrédients par type de stockage
+const placardIngredients = ref<IngredientDto[]>([])
+const frigoIngredients = ref<IngredientDto[]>([])
+const congelateurIngredients = ref<IngredientDto[]>([])
 
-const congelateurIngredientsRaw = [
-  { id: 8, mesure: 'grammes', quantity: 1000, 'max-quantity': 2000, label: 'Poulet' },
-]
+// Observer les changements de data et mettre à jour les références
 
-// Initialiser les références avec les pourcentages calculés
-const placardIngredients = ref<IngredientDto[]>(
-  initIngredientsWithPercentage(placardIngredientsRaw),
-)
-const frigoIngredients = ref<IngredientDto[]>(initIngredientsWithPercentage(frigoIngredientsRaw))
-const congelateurIngredients = ref<IngredientDto[]>(
-  initIngredientsWithPercentage(congelateurIngredientsRaw),
-)
+const updateIngredientsFromData = () => {
+  if (ingredientsByType.value) {
+    const data = ingredientsByType.value.data
+    if (data) {
+      // Récupérer les ingrédients par type depuis la réponse de l'API
+      placardIngredients.value = initIngredientsWithPercentage(data.Placard?.items || [])
+      frigoIngredients.value = initIngredientsWithPercentage(data.Frigo?.items || [])
+      congelateurIngredients.value = initIngredientsWithPercentage(data.Congélateur?.items || [])
+    }
+  }
+}
 
 // Fonctions pour mettre à jour les ingrédients
 const updatePlacardIngredients = (updatedIngredients: IngredientDto[]) => {
@@ -100,11 +72,16 @@ const updateCongelateurIngredients = (updatedIngredients: IngredientDto[]) => {
   }))
 }
 
+// Surveiller les changements de données
+watch(
+  () => ingredientsByType.value,
+  () => updateIngredientsFromData(),
+  { immediate: true },
+)
+
 // Recalculer les pourcentages au montage du composant
 onMounted(() => {
-  updatePlacardIngredients(placardIngredients.value)
-  updateFrigoIngredients(frigoIngredients.value)
-  updateCongelateurIngredients(congelateurIngredients.value)
+  updateIngredientsFromData()
 })
 </script>
 
@@ -116,7 +93,13 @@ onMounted(() => {
         <SmartRecipes />
       </div>
 
-      <div class="flex gap-3">
+      <div v-if="isLoading" class="text-center p-4">Chargement des ingrédients...</div>
+
+      <div v-else-if="isError" class="text-center p-4 text-red-500">
+        Erreur lors du chargement des ingrédients
+      </div>
+
+      <div v-else class="flex gap-3">
         <CardStockage
           title="placard"
           :icon="ShoppingBasket"
