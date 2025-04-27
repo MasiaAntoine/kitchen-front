@@ -160,7 +160,7 @@ const onSubmit = handleSubmit((values) => {
 <template>
   <Dialog v-model:open="dialogOpen">
     <DialogTrigger as-child @click="dialogOpen = true">
-      <Button variant="outline" class="w-full">Ajouter un ingrédient</Button>
+      <Button variant="outline" class="w-full">Nouveau</Button>
     </DialogTrigger>
     <DialogContent class="max-w-md">
       <DialogHeader>
