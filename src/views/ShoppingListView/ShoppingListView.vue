@@ -71,14 +71,6 @@ function isChecked(id: number): boolean {
 
         <div v-else-if="sortedIngredients.length === 0" class="text-gray-500">
           <p>Aucun ingrédient à faible stock à afficher.</p>
-
-          <!-- Déboguer la structure des données -->
-          <details class="mt-4 p-2 border rounded">
-            <summary class="cursor-pointer font-semibold">Détails de la réponse (debug)</summary>
-            <pre class="whitespace-pre-wrap text-xs mt-2">{{
-              JSON.stringify(rawResponse, null, 2)
-            }}</pre>
-          </details>
         </div>
 
         <div v-else class="space-y-3 overflow-y-auto max-h-[72dvh]">
