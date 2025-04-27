@@ -160,11 +160,11 @@ const onSubmit = handleSubmit((values) => {
 <template>
   <Dialog v-model:open="dialogOpen">
     <DialogTrigger as-child @click="dialogOpen = true">
-      <Button variant="outline" class="w-full">Nouveau</Button>
+      <Button variant="outline" class="w-full">Nouveau Ingrédient</Button>
     </DialogTrigger>
     <DialogContent class="max-w-md">
       <DialogHeader>
-        <DialogTitle>Ajouter un ingrédient</DialogTitle>
+        <DialogTitle>Nouveau Ingrédient</DialogTitle>
         <DialogDescription>
           Remplissez ce formulaire pour ajouter un nouvel ingrédient à votre cuisine.
         </DialogDescription>
