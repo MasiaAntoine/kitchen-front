@@ -23,6 +23,8 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 
+import { Skeleton } from '@/components/ui/skeleton'
+
 const { data, isError, error, isPending } = useFetchIngredientsConnected()
 
 // Fonction pour calculer le pourcentage automatiquement
@@ -81,8 +83,8 @@ const slidesData = computed(() => {
     </CardHeader>
 
     <CardContent>
-      <div v-if="isPending" class="flex justify-center items-center h-[20dvh]">
-        Chargement des ingrédients...
+      <div v-if="isPending" class="grid grid-cols-2 gap-4 place-items-center w-full">
+        <Skeleton class="size-24 rounded-full" v-for="i in 4" :key="i" />
       </div>
       <div v-else-if="isError" class="flex justify-center items-center h-[20dvh]">
         Erreur lors du chargement des ingrédients

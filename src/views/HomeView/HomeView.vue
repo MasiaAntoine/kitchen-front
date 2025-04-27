@@ -8,6 +8,7 @@ import AppSidebar from '@/components/AppSidebar.vue'
 import ConnectedIngredients from './components/ConnectedIngredients.vue'
 import SmartRecipes from './components/SmartRecipes.vue'
 import CardStockage from '@/components/CardStockage.vue'
+import { Skeleton } from '@/components/ui/skeleton'
 
 import { ShoppingBasket, Refrigerator, Snowflake } from 'lucide-vue-next'
 
@@ -93,7 +94,9 @@ onMounted(() => {
         <SmartRecipes />
       </div>
 
-      <div v-if="isPending" class="text-center p-4">Chargement des ingrédients...</div>
+      <div v-if="isPending" class="flex gap-3">
+        <Skeleton class="w-1/2 h-[45.7dvh]" v-for="i in 3" :key="i" />
+      </div>
 
       <div v-else-if="isError" class="text-center p-4 text-red-500">
         Erreur lors du chargement des ingrédients
