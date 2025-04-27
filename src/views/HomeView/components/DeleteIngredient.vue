@@ -74,14 +74,15 @@ const columns: ColumnDef<Ingredient>[] = [
         modelValue:
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && 'indeterminate'),
-        'onUpdate:modelValue': (value: boolean) => table.toggleAllPageRowsSelected(!!value),
+        'onUpdate:modelValue': (value: boolean | 'indeterminate') =>
+          table.toggleAllPageRowsSelected(!!value),
         ariaLabel: 'Sélectionner tout',
         class: 'ml-2',
       }),
     cell: ({ row }) =>
       h(Checkbox, {
         modelValue: row.getIsSelected(),
-        'onUpdate:modelValue': (value: boolean) => row.toggleSelected(!!value),
+        'onUpdate:modelValue': (value: boolean | 'indeterminate') => row.toggleSelected(!!value),
         ariaLabel: 'Sélectionner ligne',
         class: 'ml-2',
       }),
